@@ -1,0 +1,9 @@
+---
+- name: Delay shutting down the remote node
+  hosts: all
+  become: yes
+
+  tasks:
+  - name: shutting down
+    community.general.shutdown:
+      delay: 0
