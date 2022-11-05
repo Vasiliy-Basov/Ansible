@@ -1,0 +1,26 @@
+---
+# tasks file for cockpit
+- block: # ======Block for CentOS======  
+  - name: Install Cockpit CentOS
+    yum: name=cockpit state=latest    
+  - name: Start cockpit.socket
+    service: name=cockpit.socket state=started enabled=yes
+  - name: Start cockpit
+    service: name=cockpit state=started enabled=yes    
+  - name: firewalld rules
+    ansible.posix.firewalld:
+        service: cockpit
+        state: enabled
+        permanent: true
+        immediate: true
+  when: ansible_facts['distribution'] == 'CentOS'
+  
+- block: # ======Block for Ubuntu====== 
+  - name: Install Cockpit Ubuntu
+    apt: name=cockpit default_release={{ ansible_lsb.codename }}-backports
+  - name: Start cockpit.socket
+    service: name=cockpit.socket state=started enabled=yes
+  - name: Start cockpit
+    service: name=cockpit state=started enabled=yes
+  when: ansible_facts['distribution'] == 'Ubuntu'
+  

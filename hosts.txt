@@ -1,0 +1,10 @@
+[staging_servers]
+ubuntu02 ansible_host=172.18.0.3 owner=vasya
+ubuntu03 ansible_host=172.18.0.4 owner=petya
+
+[prod_servers]
+centos01 ansible_host=172.18.0.5 owner=olya
+
+[all_servers:children]
+staging_servers
+prod_servers

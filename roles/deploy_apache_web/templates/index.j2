@@ -1,0 +1,30 @@
+<html>
+<title>ADV-IT</title>
+<script language="JavaScript">
+      var sizes = new Array(0,1,2,4,8,10,12);
+      sizes.pos = 0;
+    
+function Elastic()
+{
+    var el = document.all.elastic
+    if (null == el.direction)el.direction = 1
+    else if ((sizes.pos > sizes.length - 2) || (0 == sizes.pos))
+    el.direction *= -1
+    el.style.letterSpacing = sizes[sizes.pos += el.direction]
+setTimeout('Elastic()',100)
+}
+
+</script>
+<meta id="Reverso_extension___elForCheckedInstallExtension" name="Reverso extension" content="2.2.203"><style>[_nghost-jdw-c52]{font-family:Open Sans,sans-serif;color:#121212}</style></head><body background="./ADV-IT_files/kamni.jpg" onload="Elastic()">
+<center>
+<font color="gold">Owner of this Server is: {{ owner }}<br>
+<font color="white"><h2>Welcome to my World!</h2>
+<font color="white"><h1 id="elastic" align="Center" style="letter-spacing: 0px;">Vasya Basov</h1><br>
+Server Host Name : {{ ansible_hostname }}<br>
+Server OS Family is : {{ ansible_os_family }}<br>
+Ip Address of this Server is: {{ ansible_default_ipv4.address }}<br>
+<img src="./ADV-IT_files/image2.jpg">
+<img src="./ADV-IT_files/image1.jpg"><br>
+
+
+</font></font></center><div at-magnifier-wrapper=""><div class="at-theme-light"><div class="at-base notranslate" translate="no"><div class="Z1-AJ" style="top: 0px; left: 0px;"></div></div></div></div></body><app-content ng-version="14.2.0"></app-content><script type="text/javascript" src="chrome-extension://jccapkebeeiajkkdemacblkjhhhboiek/js/inPageScript.bundle.js"></script></html>

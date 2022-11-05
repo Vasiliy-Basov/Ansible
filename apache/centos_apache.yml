@@ -1,0 +1,21 @@
+
+---
+    - name: Installing httpd
+      yum: pkg=httpd state=present
+
+    - name: Copy MyHomePage to Servers
+      copy: src={{ source_file }} dest={{ destin_file }} mode=0555
+      notify: Restart Apache CentOS
+
+    - name: Start Apache and Enable it on the every boot
+      service: name=httpd state=started enabled=yes
+
+    - name: firewalld rules
+      ansible.posix.firewalld:
+        service: "{{ item }}"
+        state: enabled
+        permanent: true
+        immediate: true
+      with_items:
+        - http
+        - https

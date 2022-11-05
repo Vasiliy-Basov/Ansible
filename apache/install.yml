@@ -1,0 +1,21 @@
+---
+
+- name: Install default Apache Web Server
+  hosts: all
+  become: true
+  vars:
+    source_file: /home/baggurd/ansible/site/
+    destin_file: /var/www/html
+  tasks:
+  - name: Performing Tasks for CentOS
+    include_tasks: centos_apache.yml
+    when: ansible_facts['distribution'] == 'CentOS'
+  - name: Performing Tasks for Ubuntu
+    include_tasks: ubuntu_apache.yml
+    when: ansible_facts['distribution'] == 'Ubuntu'
+  handlers:
+    - name: Restart Apache CentOS
+      service: name=httpd state=restarted
+      
+    - name: Restart Apache Ubuntu
+      service: name=apache2 state=restarted

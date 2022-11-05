@@ -1,0 +1,68 @@
+---
+# tasks file for deploy_apache_web
+- block: # ======Block for RedHat======  
+  - name: Install Apache WebServer for RedHat
+    yum: name=httpd state=latest    
+  - name: Start WebServer for RedHat and make it enable on boot
+    service: name=httpd state=started enabled=yes
+  - name: firewalld rules
+    ansible.posix.firewalld:
+        service: "{{ item }}"
+        state: enabled
+        permanent: true
+        immediate: true
+    with_items:
+        - http
+        - https
+        - rsyncd
+  when: ansible_os_family == "RedHat"    
+
+- block: # ======Block for Debian====== 
+  - name: Install Apache WebServer for Debian
+    apt: name=apache2 state=latest 
+  - name: Start WebServer for Debian and make it enable on boot
+    service: name=apache2 state=started enabled=yes
+    when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" 
+
+- name: Generate Index.html file
+  template: 
+    src: "index.j2"
+    dest: "{{ destin_file }}/index.html"
+    mode: 0555
+  notify: 
+  - Restart Apache RedHat
+  - Restart Apache Debian
+  
+- name: Temporarily allow connecting user to perform synchronization as admin without password
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    line: "{{ item }}"
+    validate: 'visudo -cf %s'
+  loop:
+    - '%sudo ALL=(ALL) NOPASSWD:/usr/bin/rsync'
+    - '%wheel ALL=(ALL) NOPASSWD:/usr/bin/rsync'
+  
+- name: Upload project source code
+  block:
+    - name: Copy MyHomePage to Web Servers
+      synchronize:
+        src: "{{ role_path }}/files/" 
+        dest: "{{ destin_file }}"
+        checksum: true
+        recursive: true
+        mode: push
+      notify: 
+      - Restart Apache RedHat
+      - Restart Apache Debian   
+  always:
+    - name: Revoke temporary privilege
+      lineinfile:
+        path: /etc/sudoers
+        state: absent
+        line: "{{ item }}"
+        validate: 'visudo -cf %s'
+      loop:
+        - '%sudo ALL=(ALL) NOPASSWD:/usr/bin/rsync'
+        - '%wheel ALL=(ALL) NOPASSWD:/usr/bin/rsync'
